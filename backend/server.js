@@ -1,132 +1,81 @@
-import express from "express";
-import cors from "cors";
-import dotenv from "dotenv";
-import OpenAI from "openai";
-import fetch from "node-fetch";
-import fs from "fs";
-import path from "path";
+const express = require("express");
+const cors = require("cors");
+const dotenv = require("dotenv");
+const { Configuration, OpenAIApi } = require("openai");
+const fetch = require("node-fetch"); // Node 12 compatible
 
 dotenv.config();
 const app = express();
 app.use(cors());
 app.use(express.json());
+const openai = new OpenAIApi(new Configuration({ apiKey: process.env.OPENAI_API_KEY || "" }));
+const ELEVEN_API_KEY = process.env.ELEVENLABS_API_KEY || "";
+const ELEVEN_VOICE_ID = "21m00Tcm4TlvDq8ikWAM";
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+// Test route
+app.get("/", function (req, res) {
+  res.send("✅ IdeaScoop backend running (Free Mode)!");
 });
+app.post("/api/ai/generate", async function (req, res) {
+  var idea = req.body.idea;
+  if (!idea) return res.status(400).json({ error: "No idea provided" });
+      // demo ila jab lah makhdmch backend nkaliw nhad data
 
-const ELEVEN_API_KEY = process.env.ELEVENLABS_API_KEY;
-
-app.get("/", (req, res) => {
-  res.send("✅ IdeaScoop creative backend is running!");
-});
-
-app.post("/api/ai/generate", async (req, res) => {
-  const { idea } = req.body;
-  if (!idea) {
-    return res.status(400).json({ error: "No idea provided" });
-  }
+  var analysis = {
+    summary: "Demo summary: This is a free preview analysis of your startup idea.",
+    budget: "$10,000 - $20,000",
+    riskLevel: "Medium",
+    marketSize: "500,000 potential users"
+  };
+  var audioURL = ""; // placeholder
+  var videoURL = "https://sample-videos.com/video123/mp4/480/asdasdas.mp4"; // placeholder
 
   try {
-    console.log("🧠 Analyzing startup idea:", idea);
-
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [
-        {
-          role: "system",
-          content: `
-            You are a startup analyst and creative narrator.
-            Respond ONLY in valid JSON:
-            {
-              "summary": "...",
-              "budget": "...",
-              "riskLevel": "...",
-              "marketSize": "...",
-              "script": "Creative 1-minute video narration about this idea."
-            }
-          `,
-        },
-        {
-          role: "user",
-          content: `Analyze and narrate this startup idea: ${idea}`,
-        },
-      ],
-      temperature: 0.85,
-    });
-
-    const raw = completion.choices[0].message.content;
-    console.log("📝 Raw GPT Output:", raw);
-
-    let result;
-    try {
-      result = JSON.parse(raw);
-    } catch (err) {
-      console.error("⚠️ JSON parse failed.");
-      result = {
-        summary: raw,
-        budget: "N/A",
-        riskLevel: "N/A",
-        marketSize: "N/A",
-        script: "No script generated.",
-      };
-    }
-
-    console.log("🎤 Generating voice narration...");
-    const voiceId = "pNInz6obpgDQGcFmaJgB"; 
-    const audioUrl = await generateVoice(result.script, voiceId);
-
-    res.json({
-      summary: result.summary,
-      budget: result.budget,
-      riskLevel: result.riskLevel,
-      marketSize: result.marketSize,
-      script: result.script,
-      audio: audioUrl,
-    });
-  } catch (error) {
-    console.error("❌ Backend Error:", error);
-    res.status(500).json({ error: "AI generation failed." });
-  }
-});
-
-// 🗣 ElevenLabs voice generation helper
-async function generateVoice(text, voiceId) {
-  try {
-    const response = await fetch(
-      `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`,
-      {
-        method: "POST",
-        headers: {
-          "xi-api-key": ELEVEN_API_KEY,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          text,
-          voice_settings: {
-            stability: 0.6,
-            similarity_boost: 0.8,
+    // Try OpenAI first (free if quota available)
+    if (process.env.OPENAI_API_KEY) {
+      var completion = await openai.createChatCompletion({
+        model: "gpt-3.5-turbo",
+        messages: [
+          {
+            role: "system",
+            content:
+              "You are a startup idea analyzer. ONLY respond in JSON with keys: summary, budget, riskLevel, marketSize."
           },
-        }),
+          { role: "user", content: "Analyze this startup idea:\n\n" + idea }
+        ],
+        temperature: 0.7
+      });
+
+      var raw = completion.data.choices[0].message.content;
+      console.log("📝 OpenAI raw output:", raw);
+      var jsonMatch = raw.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        try {
+          var parsed = JSON.parse(jsonMatch[0]);
+          analysis = {
+            summary: parsed.summary || analysis.summary,
+            budget: parsed.budget || analysis.budget,
+            riskLevel: parsed.riskLevel || analysis.riskLevel,
+            marketSize: parsed.marketSize || analysis.marketSize
+          };
+        } catch (err) {
+          console.warn("⚠️ JSON parse failed, using demo fallback.");
+        }
       }
-    );
-
-    if (!response.ok) throw new Error("Failed to generate voice");
-
-    // Save audio locally (optional)
-    const arrayBuffer = await response.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-    const filePath = path.resolve(`./output-${Date.now()}.mp3`);
-    fs.writeFileSync(filePath, buffer);
-
-    console.log("✅ Voice generated and saved:", filePath);
-    return filePath;
-  } catch (error) {
-    console.error("🎧 ElevenLabs Error:", error);
-    return null;
+    }
+  } catch (err) {
+    console.warn("⚠️ OpenAI API failed or quota exceeded, using demo fallback.", err.message);
   }
-}
-
-// 🚀 Start server
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`🚀 Creative backend running on port ${PORT}`));
+  res.json({
+    summary: analysis.summary,
+    budget: analysis.budget,
+    riskLevel: analysis.riskLevel,
+    marketSize: analysis.marketSize,
+    audioURL: audioURL, // placeholder
+    videoURL: videoURL  // placeholder
+  });
+});
+var PORT = process.env.PORT || 5000;
+app.listen(PORT, function () {
+  console.log("🚀 Backend running on port " + PORT + " (Free Mode)");
+});
