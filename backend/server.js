@@ -1,22 +1,13 @@
-// ===============================
-// ✅ IDEA SCOOP - BACKEND SERVER
-// ===============================
 
-// Import dependencies
+// hna ghade ndero import ldakche le m7tajino
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import OpenAI from "openai";
-
-// Load environment variables from .env
 dotenv.config();
-
-// Create express app
 const app = express();
 app.use(cors());
 app.use(express.json());
-
-// Initialize OpenAI client
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 });
@@ -68,14 +59,12 @@ app.post("/api/ai/generate", async (req, res) => {
         marketSize: "N/A"
       };
     }
-
-    // Send back to frontend
     res.json({
       summary: result.summary,
       budget: result.budget,
       riskLevel: result.riskLevel,
       marketSize: result.marketSize,
-      videoURL: "#" // Placeholder for now
+      videoURL: "#" 
     });
 
   } catch (error) {
