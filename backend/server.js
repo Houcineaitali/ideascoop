@@ -31,7 +31,6 @@ app.post("/api/ai/generate", async function (req, res) {
   var videoURL = "https://sample-videos.com/video123/mp4/480/asdasdas.mp4"; // placeholder
 
   try {
-    // Try OpenAI first (free if quota available)
     if (process.env.OPENAI_API_KEY) {
       var completion = await openai.createChatCompletion({
         model: "gpt-3.5-turbo",
