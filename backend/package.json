@@ -8,7 +8,9 @@
     "cors": "^2.8.5",
     "dotenv": "^16.6.1",
     "express": "^4.21.2",
-    "openai": "^6.8.0"
+    "node-fetch": "^2.7.0",
+    "openai": "^3.3.0",
+    "openai-fetch": "^3.4.2"
   },
   "scripts": {
     "start": "node server.js"
