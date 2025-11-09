@@ -1,52 +1,61 @@
 const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
-const { Configuration, OpenAIApi } = require("openai");
-const fetch = require("node-fetch"); // Node 12 compatible
+const fetch = require("node-fetch"); 
 
 dotenv.config();
+
 const app = express();
 app.use(cors());
 app.use(express.json());
-const openai = new OpenAIApi(new Configuration({ apiKey: process.env.OPENAI_API_KEY || "" }));
-const ELEVEN_API_KEY = process.env.ELEVENLABS_API_KEY || "";
-const ELEVEN_VOICE_ID = "21m00Tcm4TlvDq8ikWAM";
 
-// Test route
-app.get("/", function (req, res) {
-  res.send("✅ IdeaScoop backend running (Free Mode)!");
+const HUAWEI_API_URL = process.env.HUAWEI_API_URL || "https://api-ap-southeast-1.modelarts-maas.com/v1/chat/completions";
+const HUAWEI_API_KEY = process.env.HUAWEI_API_KEY || "";
+const HUAWEI_MODEL = "deepseek-v3.1"; 
+
+app.get("/", (req, res) => {
+  res.send("✅ IdeaScoop backend running with Huawei DeepSeek!");
 });
-app.post("/api/ai/generate", async function (req, res) {
-  var idea = req.body.idea;
+
+app.post("/api/ai/generate", async (req, res) => {
+  const idea = req.body.idea;
   if (!idea) return res.status(400).json({ error: "No idea provided" });
-      // demo ila jab lah makhdmch backend nkaliw nhad data
 
   var analysis = {
-    summary: "Demo summary: This is a free preview analysis of your startup idea.",
+    summary: "Demo summary: Free preview of your startup idea.",
     budget: "$10,000 - $20,000",
     riskLevel: "Medium",
     marketSize: "500,000 potential users"
   };
-  var audioURL = ""; // placeholder
-  var videoURL = "https://sample-videos.com/video123/mp4/480/asdasdas.mp4"; // placeholder
+  var videoURL = "https://sample-videos.com/video123/mp4/480/asdasdas.mp4";
+  var audioURL = "";
 
   try {
-    if (process.env.OPENAI_API_KEY) {
-      var completion = await openai.createChatCompletion({
-        model: "gpt-3.5-turbo",
-        messages: [
-          {
-            role: "system",
-            content:
-              "You are a startup idea analyzer. ONLY respond in JSON with keys: summary, budget, riskLevel, marketSize."
-          },
-          { role: "user", content: "Analyze this startup idea:\n\n" + idea }
-        ],
-        temperature: 0.7
+    if (HUAWEI_API_KEY) {
+      const response = await fetch(HUAWEI_API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Auth-Token": HUAWEI_API_KEY
+        },
+        body: JSON.stringify({
+          model: HUAWEI_MODEL,
+          messages: [
+            {
+              role: "user",
+              content: "Analyze this startup idea and respond in valid JSON with summary, budget, riskLevel, marketSize:\n\n" + idea
+            }
+          ]
+        })
       });
 
-      var raw = completion.data.choices[0].message.content;
-      console.log("📝 OpenAI raw output:", raw);
+      const data = await response.json();
+      var raw = "";
+      if (data.choices && data.choices.length > 0 && data.choices[0].content) {
+        raw = data.choices[0].content;
+      }
+      console.log("📝 Huawei raw output:", raw);
+
       var jsonMatch = raw.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         try {
@@ -63,18 +72,18 @@ app.post("/api/ai/generate", async function (req, res) {
       }
     }
   } catch (err) {
-    console.warn("⚠️ OpenAI API failed or quota exceeded, using demo fallback.", err.message);
+    console.warn("⚠️ Huawei API failed, using demo fallback.", err.message);
   }
+
   res.json({
     summary: analysis.summary,
     budget: analysis.budget,
     riskLevel: analysis.riskLevel,
     marketSize: analysis.marketSize,
-    audioURL: audioURL, // placeholder
-    videoURL: videoURL  // placeholder
+    videoURL: videoURL,
+    audioURL: audioURL
   });
 });
-var PORT = process.env.PORT || 5000;
-app.listen(PORT, function () {
-  console.log("🚀 Backend running on port " + PORT + " (Free Mode)");
-});
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log("🚀 Backend running on port " + PORT + " with Huawei DeepSeek"));
