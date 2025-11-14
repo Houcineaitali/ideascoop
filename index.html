@@ -190,163 +190,207 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    async function refineIdea() {
-    const idea = document.getElementById("ideaInput").value;
+   // -----------------------------
+//  FRONTEND JS FOR IDEASCOOP AI
+// -----------------------------
 
-    const res = await fetch("http://localhost:5000/api/refineIdea", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ idea })
-    });
+const API_BASE = "http://localhost:5000/api";
 
-    const data = await res.json();
-    document.getElementById("refinedIdea").innerText = data.refined;
+function setLoading(elementId, status) {
+    const el = document.getElementById(elementId);
+    if (!el) return;
+
+    el.innerText = status ? "Loading..." : "";
 }
 
 
+// -----------------------------
+// 1. REFINE IDEA
+// -----------------------------
+async function refineIdea() {
+    const idea = document.getElementById("ideaInput").value;
+    const output = document.getElementById("refinedIdea");
+
+    output.innerText = "Refining your idea...";
+
+    try {
+        const res = await fetch(`${API_BASE}/refineIdea`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ idea })
+        });
+
+        const data = await res.json();
+        output.innerText = data.refined || "No output received.";
+    } catch (err) {
+        output.innerText = "❌ Error connecting to backend.";
+    }
+}
+
+
+// -----------------------------
+// 2. STORYBOARD GENERATION
+// -----------------------------
 async function generateStoryboard() {
     const storyboard = document.getElementById("storyboardInput").value;
+    const output = document.getElementById("storyboardOutput");
 
-    const res = await fetch("http://localhost:5000/api/storyboard", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ storyboard })
-    });
+    output.innerText = "Generating storyboard...";
 
-    const data = await res.json();
-    document.getElementById("storyboardOutput").innerText = data.output;
+    try {
+        const res = await fetch(`${API_BASE}/storyboard`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ storyboard })
+        });
+
+        const data = await res.json();
+        output.innerText = data.output || "No output received.";
+    } catch (err) {
+        output.innerText = "❌ Error connecting to backend.";
+    }
 }
 
 
-   async function simulateAction() {
-    const market = parseInt(document.getElementById("marketInterest").value);
-    const investor = parseInt(document.getElementById("investorConfidence").value);
-    const feasibility = parseInt(document.getElementById("productFeasibility").value);
 
-    const res = await fetch("http://localhost:5000/api/simulate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ market, investor, feasibility })
-    });
-
-    const data = await res.json();
-    document.getElementById("probabilityOutput").innerText =
-        `Estimated Success Probability: ${data.probability}%`;
-}
-
-	let probabilityChart;
+// -----------------------------
+// 3. ACTION / PROBABILITY SIMULATION
+// -----------------------------
+let probabilityChart;
 
 function updateSimulation() {
-    const market = document.getElementById('marketInterest').value;
-    const investor = document.getElementById('investorConfidence').value;
-    const feasibility = document.getElementById('productFeasibility').value;
+    const market = +document.getElementById("marketInterest").value;
+    const investor = +document.getElementById("investorConfidence").value;
+    const feasibility = +document.getElementById("productFeasibility").value;
 
-    document.getElementById('marketInterestVal').innerText = market;
-    document.getElementById('investorConfidenceVal').innerText = investor;
-    document.getElementById('productFeasibilityVal').innerText = feasibility;
+    document.getElementById("marketInterestVal").innerText = market;
+    document.getElementById("investorConfidenceVal").innerText = investor;
+    document.getElementById("productFeasibilityVal").innerText = feasibility;
 
-    const data = [parseInt(market), parseInt(investor), parseInt(feasibility)];
+    const values = [market, investor, feasibility];
 
-    if (probabilityChart) {
-        probabilityChart.data.datasets[0].data = data;
-        probabilityChart.update();
-    } else {
-        const ctx = document.getElementById('probabilityChart').getContext('2d');
+    if (!probabilityChart) {
+        const ctx = document.getElementById("probabilityChart").getContext("2d");
+
         probabilityChart = new Chart(ctx, {
-            type: 'bar',
+            type: "bar",
             data: {
-                labels: ['Market Interest', 'Investor Confidence', 'Product Feasibility'],
+                labels: ["Market Interest", "Investor Confidence", "Product Feasibility"],
                 datasets: [{
-                    label: 'Simulation Values',
-                    data: data,
-                    backgroundColor: ['#4f46e5', '#6366f1', '#818cf8']
+                    label: "Values",
+                    data: values,
+                    backgroundColor: ["#4f46e5", "#6366f1", "#818cf8"]
                 }]
             },
             options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { max: 100 } } }
         });
+    } else {
+        probabilityChart.data.datasets[0].data = values;
+        probabilityChart.update();
     }
 }
 
 function simulateAction() {
-    const market = parseInt(document.getElementById('marketInterest').value);
-    const investor = parseInt(document.getElementById('investorConfidence').value);
-    const feasibility = parseInt(document.getElementById('productFeasibility').value);
+    const market = +document.getElementById("marketInterest").value;
+    const investor = +document.getElementById("investorConfidence").value;
+    const feasibility = +document.getElementById("productFeasibility").value;
 
-    // Weighted probability formula
     const probability = ((0.4*market) + (0.35*investor) + (0.25*feasibility)).toFixed(2);
-    document.getElementById('probabilityOutput').innerText = `Estimated Success Probability: ${probability}%`;
+
+    document.getElementById("probabilityOutput").innerText =
+        `Estimated Success Probability: ${probability}%`;
 }
 
-// Initialize chart with default values
-updateSimulation();
 
+
+// -----------------------------
+// 4. METRICS / CHARTS
+// -----------------------------
 async function generateMetrics() {
-    const res = await fetch("http://localhost:5000/api/metrics");
-    const data = await res.json();
+    const output = document.getElementById("metricsChart");
 
-    const ctx = document.getElementById("metricsChart").getContext("2d");
+    try {
+        const res = await fetch(`${API_BASE}/metrics`);
+        const data = await res.json();
 
-    new Chart(ctx, {
-        type: "bar",
-        data: {
-            labels: ['Market Fit', 'Funding Likelihood', 'Customer Interest', 'Growth Potential'],
-            datasets: [{
-                data: data.metrics,
-                backgroundColor: ['#4f46e5', '#6366f1', '#818cf8', '#a5b4fc']
-            }]
-        }
-    });
-}
+        const ctx = output.getContext("2d");
 
-    async function generatePitch() {
-    const res = await fetch("http://localhost:5000/api/pitch", { method: "POST" });
-    const data = await res.json();
-
-    document.getElementById("videoOutput").innerText =
-        `Video generated: ${data.videoUrl}`;
-}
-
-
-    // 3D Canvas placeholder
-    const canvas = document.getElementById('visualCanvas');
-    const ctx = canvas.getContext('2d');
-    ctx.fillStyle = '#c7d2fe';
-    ctx.fillRect(50, 50, 100, 100);
-    ctx.fillStyle = '#4f46e5';
-    ctx.fillRect(200, 100, 150, 100);
-	async function generateResearch() {
-    const idea = document.getElementById("ideaInput").value;
-
-    const res = await fetch("http://localhost:5000/api/research", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ idea })
-    });
-
-    const data = await res.json();
-    console.log("Research:", data);
-}
-	document.addEventListener("DOMContentLoaded", () => {
-    console.log("JS Loaded");
-
-    // Handle all buttons automatically
-    const buttons = document.querySelectorAll("button, .btn");
-
-    buttons.forEach(btn => {
-        btn.addEventListener("click", function (e) {
-            e.preventDefault();
-            alert("Button clicked: " + this.innerText);
+        new Chart(ctx, {
+            type: "bar",
+            data: {
+                labels: ["Market Fit", "Funding", "Customer Interest", "Growth"],
+                datasets: [{
+                    data: data.metrics,
+                    backgroundColor: ["#4f46e5", "#6366f1", "#818cf8", "#a5b4fc"]
+                }]
+            }
         });
-    });
-});
 
+    } catch (err) {
+        alert("❌ Could not load metrics.");
+    }
+}
+
+
+
+// -----------------------------
+// 5. GENERATE PITCH VIDEO
+// -----------------------------
+async function generatePitch() {
+    const output = document.getElementById("videoOutput");
+    output.innerText = "Generating video...";
+
+    try {
+        const res = await fetch(`${API_BASE}/pitch`, { method: "POST" });
+        const data = await res.json();
+
+        output.innerHTML = `
+            🎬 Video generated:<br>
+            <a href="${data.videoUrl}" target="_blank">${data.videoUrl}</a>
+        `;
+    } catch (err) {
+        output.innerText = "❌ Error generating video.";
+    }
+}
+
+
+
+// -----------------------------
+// 6. STARTUP RESEARCH GENERATION
+// -----------------------------
+async function generateResearch() {
+    const idea = document.getElementById("ideaInput").value;
+    console.log("Sending research request...");
+
+    try {
+        const res = await fetch(`${API_BASE}/research`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ idea })
+        });
+
+        const data = await res.json();
+        console.log("Research received:", data);
+
+    } catch (err) {
+        console.log("❌ Error fetching research.");
+    }
+}
+
+
+
+// -----------------------------
+// INITIALIZE SIMULATION CHART ON LOAD
+// -----------------------------
+document.addEventListener("DOMContentLoaded", () => {
+    updateSimulation();
+});
 
 </script>
 	<script src="app.js"></script>
-
-
 </body>
 </html>
+
 
 
 
