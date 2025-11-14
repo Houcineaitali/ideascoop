@@ -30,6 +30,25 @@
 
     /* Full width sections for video & charts */
     .full-width { grid-column: 1 / -1; }
+	/* Laptop & Desktop: make sections smaller */
+@media (min-width: 1024px) {
+    section {
+        max-width: 900px;     /* reduce width */
+        margin: 0 auto;       /* center section */
+        padding: 40px 30px;   /* reduce padding */
+        transform: scale(0.90); /* make entire section slightly smaller */
+        transform-origin: top center;
+    }
+
+    section h2 {
+        font-size: 1.8rem; /* smaller titles */
+    }
+
+    section p {
+        font-size: 1rem;   /* smaller text */
+    }
+}
+
 
 </style>
 </head>
@@ -312,6 +331,7 @@ async function generateMetrics() {
 
 </body>
 </html>
+
 
 
 
