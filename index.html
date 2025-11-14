@@ -171,21 +171,50 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    function refineIdea() {
-        const idea = document.getElementById('ideaInput').value;
-        document.getElementById('refinedIdea').innerText = "Refined Idea: " + idea + " [AI-enhanced]";
-    }
+    async function refineIdea() {
+    const idea = document.getElementById("ideaInput").value;
 
-    function generateStoryboard() {
-        const storyboard = document.getElementById('storyboardInput').value;
-        document.getElementById('storyboardOutput').innerText = "Storyboard / Script:\n" + storyboard + "\n[AI-generated cinematic sequence]";
-    }
+    const res = await fetch("http://localhost:5000/api/refineIdea", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ idea })
+    });
 
-    function simulateAction() {
-        const action = document.getElementById('userAction').value;
-        const probability = (Math.random() * 100).toFixed(2);
-        document.getElementById('probabilityOutput').innerText = `Action: "${action}"\nPredicted Success Probability: ${probability}%`;
-    }
+    const data = await res.json();
+    document.getElementById("refinedIdea").innerText = data.refined;
+}
+
+
+async function generateStoryboard() {
+    const storyboard = document.getElementById("storyboardInput").value;
+
+    const res = await fetch("http://localhost:5000/api/storyboard", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ storyboard })
+    });
+
+    const data = await res.json();
+    document.getElementById("storyboardOutput").innerText = data.output;
+}
+
+
+   async function simulateAction() {
+    const market = parseInt(document.getElementById("marketInterest").value);
+    const investor = parseInt(document.getElementById("investorConfidence").value);
+    const feasibility = parseInt(document.getElementById("productFeasibility").value);
+
+    const res = await fetch("http://localhost:5000/api/simulate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ market, investor, feasibility })
+    });
+
+    const data = await res.json();
+    document.getElementById("probabilityOutput").innerText =
+        `Estimated Success Probability: ${data.probability}%`;
+}
+
 	let probabilityChart;
 
 function updateSimulation() {
@@ -232,26 +261,32 @@ function simulateAction() {
 // Initialize chart with default values
 updateSimulation();
 
+async function generateMetrics() {
+    const res = await fetch("http://localhost:5000/api/metrics");
+    const data = await res.json();
 
-    function generateMetrics() {
-        const ctx = document.getElementById('metricsChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['Market Fit', 'Funding Likelihood', 'Customer Interest', 'Growth Potential'],
-                datasets: [{
-                    label: 'AI Metrics',
-                    data: [80, 65, 90, 70],
-                    backgroundColor: ['#4f46e5', '#6366f1', '#818cf8', '#a5b4fc']
-                }]
-            },
-            options: { responsive: true, plugins: { legend: { display: false } } }
-        });
-    }
+    const ctx = document.getElementById("metricsChart").getContext("2d");
 
-    function generatePitch() {
-        alert('Pitch video generation triggered. Connect this to your backend video API.');
-    }
+    new Chart(ctx, {
+        type: "bar",
+        data: {
+            labels: ['Market Fit', 'Funding Likelihood', 'Customer Interest', 'Growth Potential'],
+            datasets: [{
+                data: data.metrics,
+                backgroundColor: ['#4f46e5', '#6366f1', '#818cf8', '#a5b4fc']
+            }]
+        }
+    });
+}
+
+    async function generatePitch() {
+    const res = await fetch("http://localhost:5000/api/pitch", { method: "POST" });
+    const data = await res.json();
+
+    document.getElementById("videoOutput").innerText =
+        `Video generated: ${data.videoUrl}`;
+}
+
 
     // 3D Canvas placeholder
     const canvas = document.getElementById('visualCanvas');
@@ -260,10 +295,24 @@ updateSimulation();
     ctx.fillRect(50, 50, 100, 100);
     ctx.fillStyle = '#4f46e5';
     ctx.fillRect(200, 100, 150, 100);
+	async function generateResearch() {
+    const idea = document.getElementById("ideaInput").value;
+
+    const res = await fetch("http://localhost:5000/api/research", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ idea })
+    });
+
+    const data = await res.json();
+    console.log("Research:", data);
+}
+
 </script>
 
 </body>
 </html>
+
 
 
 
