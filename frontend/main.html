@@ -3,251 +3,212 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>IdeaScoop Free Mode</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<title>Ideascoop AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-* { margin:0;
-	padding:0;
-	box-sizing:border-box; 
-	scroll-behavior: smooth;
-	}
-body { font-family:"Poppins", sans-serif; background:#f4f7f9;
-	color:#222;
-	}
-header { position:fixed; 
-	top:0; width:100%; 
-	display:flex; 
-	justify-content:space-between; 
-	align-items:center;
-	background: rgba(255,255,255,0.95);
-	padding:1rem 2rem; backdrop-filter:blur(8px);
-	box-shadow:0 2px 10px rgba(0,0,0,0.05); 
-	z-index:10; }
-header h1 { color:#1c67ff; 
-	font-size:1.5rem; }
-nav ul { list-style:none; 
-	display:flex; gap:2rem; }
-nav a { text-decoration:none;
-	color:#333; font-weight:500;
-	transition:0.3s; }
-nav a:hover { color:#1c67ff;
-	border:1px solid #1c67ff;
-	padding:10px;
-	border-radius:10px; }
-section { padding:6rem 2rem; 
-	min-height:100vh; display:flex;
-	flex-direction:column;
-	align-items:center;
-	justify-content:center; }
-#home { text-align:center;
-	background:linear-gradient(135deg,#e8f0ff,#ffffff);
-	}
-#home h2 { 
-	font-size:2.5rem;
-	color:#1c67ff;
-	margin-bottom:1rem;
-	}
-#home p { max-width:600px; 
-	line-height:1.6; margin:0 auto; }
-.features {
-	margin-top:3rem; 
-	display:flex; flex-wrap:wrap; 
-	gap:2rem;
-	justify-content:center; }
-.feature { background:white;
-	padding:1.5rem;
-	border-radius:15px;
-	box-shadow:0 5px 15px rgba(0,0,0,0.05); 
-	width:250px; transition:0.3s; 
-	}
-.feature:hover {
-	transform:translateY(-5px); 
-	box-shadow:0 8px 20px rgba(0,0,0,0.1); }
-.feature h3 { color:#1c67ff;
-	margin-bottom:0.5rem; }
-#generate { background:#f9fbff; 
-	text-align:center; }
-#generate h2 { color:#1c67ff;
-	margin-bottom:1rem; }
-#generate input { width:300px;
-	padding:10px 15px;
-	border-radius:10px;
-	border:1px solid #ccc; 
-	outline:none;
-	font-size:1rem;
-	transition:0.3s; }
-#generate input:focus {
-	border-color:#1c67ff; 
-	box-shadow:0 0 5px rgba(28,103,255,0.3); 
-	}
-#generate button {
-	margin-top:15px; 
-	padding:10px 25px;
-	background:#1c67ff; 
-	color:white;
-	border:none;
-	border-radius:8px; cursor:pointer; font-weight:600; 
-	transition:0.3s; }
-#generate button:hover { background:#3a83ff; }
-#output { margin-top:20px;
-	max-width:500px; background:white;
-	padding:1rem 1.5rem;
-	border-radius:10px;
-	box-shadow:0 2px 10px rgba(0,0,0,0.05); 
-	text-align:left; opacity:0;
-	transition:0.5s; }
-#output p {
-	margin:0.5rem 0; }
-#videoContainer video {
-	border-radius:10px; margin-top:10px; width:100%; 
-	
-	max-width:400px; }
-#technologies { 
-	background:linear-gradient(135deg,#f7faff,#ffffff); 
-	text-align:center; }
-.tech-list {
-	display:flex; 
-	flex-wrap:wrap; 
-	justify-content:center;
-	gap:2rem; margin-top:2rem; }
-.tech-card {
-	background:white; padding:1.5rem; border-radius:12px; width:220px; box-shadow:0 4px 15px rgba(0,0,0,0.05); 
-	
-	transition:0.3s; }
-.tech-card:hover { 
-	transform:translateY(-6px); }
-.tech-card h3 { 
-	color:#1c67ff; 
-	margin-bottom:0.5rem; }
-#contact { 
-	text-align:center;
-	background:#eef3ff; }
-#contact h2 { color:#1c67ff;
-	margin-bottom:1rem; }
-.contact-links a { margin:0 1rem; 
-	color:#1c67ff;
-	text-decoration:none; 
-	font-weight:600;
-	transition:0.3s; }
-.contact-links a:hover { color:#0d3ddf; }
-.fade-in { animation:fadeIn 0.8s forwards; }
-@keyframes fadeIn { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+    body { background: #f5f7fa; color: #333; width: 100%}
+
+    /* Navbar */
+    nav { background: #4f46e5; padding: 1rem 3rem; display: flex; justify-content: space-between; align-items: center; }
+    nav h1 { color: #fff; font-size: 1.8rem; }
+    nav ul { list-style: none; display: flex; gap: 2rem; }
+    nav ul li a { color: #fff; text-decoration: none; font-weight: 600; transition: 0.3s; }
+    nav ul li a:hover { border: 1px solid white; border-radius: 5px ; padding: 5PX}
+
+    main { max-width: 100%; margin: 2rem auto; padding: 0 2rem; display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+
+    section { background: #fff; border-radius: 12px; padding: 1rem; box-shadow: 0 4px 20px rgba(0,0,0,0.08); width: 100%}
+    h2 { font-size: 1.4rem; margin-bottom: 1rem; color: #1e293b; }
+    input, textarea, select, button { width: 100%; padding: 0.8rem; margin-bottom: 1rem; border-radius: 8px; border: 1px solid #ccc; font-size: 1rem; }
+    button { background: #4f46e5; color: #fff; font-weight: 600; cursor: pointer; border: none; transition: 0.3s; }
+    button:hover { background: #3730a3; }
+    .output { background: #e0f7fa; padding: 1rem; border-radius: 8px; min-height: 80px; white-space: pre-wrap; }
+
+    /* Canvas styling */
+    canvas { border: 1px solid #ccc; border-radius: 8px; margin-top: 1rem; }
+
+    /* Full width sections for video & charts */
+    .full-width { grid-column: 1 / -1; }
+
 </style>
 </head>
 <body>
 
-<header>
-  <h1>IdeaScoop</h1>
-  <nav>
+<!-- Navbar -->
+<nav>
+    <h1>Ideascoop AI</h1>
     <ul>
-      <li><a href="#home">Home</a></li>
-      <li><a href="#generate">Generate</a></li>
-      <li><a href="#technologies">Technologies</a></li>
-      <li><a href
-			 ="#contact">Contact</a></li>
+        <li><a href="#idea">Idea</a></li>
+        <li><a href="#storyboard">Storyboard</a></li>
+        <li><a href="#visual">Visual</a></li>
+        <li><a href="#simulation">Simulation</a></li>
+        <li><a href="#metrics">Metrics</a></li>
+        <li><a href="#video">Video</a></li>
     </ul>
-  </nav>
-</header>
+</nav>
 
-<section id="home">
-  <h2>Turn Your Startup Ideas into Insights 🌱</h2>
-  <p>IdeaScoop transforms your startup idea into AI-powered insights, estimated budget, market size, and risk level. Works even if API quota is exceeded!</p>
+<main>
+
+    <!-- Idea Input -->
+    <section id="idea">
+        <h2>Enter Your Startup Idea</h2>
+        <textarea id="ideaInput" placeholder="Describe your idea in 1–2 sentences"></textarea>
+        <button onclick="refineIdea()">Refine Idea</button>
+        <div class="output" id="refinedIdea">Refined idea will appear here...</div>
+    </section>
+
+    <!-- Storyboard -->
+    <section id="storyboard">
+        <h2>Storyboard & Script</h2>
+        <textarea id="storyboardInput" placeholder="Optional: Enter story or key points"></textarea>
+        <button onclick="generateStoryboard()">Generate Storyboard</button>
+        <div class="output" id="storyboardOutput">Storyboard / script will appear here...</div>
+    </section>
+
+    <!-- Visual / 3D -->
+    <section id="visual">
+        <h2>Visual / 3D Preview</h2>
+        <canvas id="visualCanvas" width="600" height="300"></canvas>
+    </section>
+
+    <!-- Action & Probability -->
+    <!-- Action & Probability -->
+<section id="simulation">
+    <h2>Action & Probability Simulation</h2>
+    <p>Adjust sliders to simulate potential outcomes and see live probabilities.</p>
+
+    <div style="display:flex; gap:2rem; flex-wrap:wrap;">
+        <div style="flex:1; min-width:250px;">
+            <label>Market Interest</label>
+            <input type="range" id="marketInterest" min="0" max="100" value="50" oninput="updateSimulation()">
+            <span id="marketInterestVal">50</span>%
+        </div>
+        <div style="flex:1; min-width:250px;">
+            <label>Investor Confidence</label>
+            <input type="range" id="investorConfidence" min="0" max="100" value="50" oninput="updateSimulation()">
+            <span id="investorConfidenceVal">50</span>%
+        </div>
+        <div style="flex:1; min-width:250px;">
+            <label>Product Feasibility</label>
+            <input type="range" id="productFeasibility" min="0" max="100" value="50" oninput="updateSimulation()">
+            <span id="productFeasibilityVal">50</span>%
+        </div>
+    </div>
+
+    <button onclick="simulateAction()">Simulate Probability</button>
+
+    <canvas id="probabilityChart" width="600" height="300" style="margin-top:1rem;"></canvas>
+    <div class="output" id="probabilityOutput">Probability results will appear here...</div>
 </section>
 
-<section id="generate">
-  <h2>Generate Insights</h2>
-  <input type="text" id="ideaInput" placeholder="Type your startup idea..." />
-  <br>
-  <button id="generateBtn">Generate</button>
+    <!-- Metrics / Charts -->
+    <section id="metrics" class="full-width">
+        <h2>Metrics & Charts</h2>
+        <button onclick="generateMetrics()">Generate Charts</button>
+        <canvas id="metricsChart" width="1200" height="300"></canvas>
+    </section>
 
-  <div id="output">
-    <p><strong>Summary:</strong> <span id="summary"></span></p>
-    <p><strong>Budget:</strong> <span id="budget"></span></p>
-    <p><strong>Risk Level:</strong> <span id="risk"></span></p>
-    <p><strong>Market Size:</strong> <span id="market"></span></p>
-    <audio id="audioPlayer" controls style="width:100%; display:none;"></audio>
-    <div id="videoContainer"></div>
-  </div>
-</section>
+    <!-- Video Output -->
+    <section id="video" class="full-width">
+        <h2>Pitch Video Output</h2>
+        <button onclick="generatePitch()">Generate Pitch Video</button>
+        <div class="output" id="videoOutput">Your generated video preview will appear here...</div>
+    </section>
 
-<section id="technologies">
-  <h2>Technologies</h2>
-  <div class="tech-list">
-    <div class="tech-card"><h3>OpenAI GPT</h3><p>AI startup analysis</p></div>
-    <div class="tech-card"><h3>RunwayML</h3><p>3D cinematic video</p></div>
-    <div class="tech-card"><h3>ElevenLabs</h3><p>AI voice narration</p></div>
-  </div>
-</section>
+</main>
 
-<section id="contact">
-  <h2>Contact Us</h2>
-  <div class="contact-links">
-    <a href="mailto:contact@ideascoop.com">Email</a>
-    <a href="#">LinkedIn</a>
-    <a href="#">Twitter</a>
-  </div>
-</section>
-
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-const generateBtn = document.getElementById("generateBtn");
-const output = document.getElementById("output");
-const summaryEl = document.getElementById("summary");
-const budgetEl = document.getElementById("budget");
-const riskEl = document.getElementById("risk");
-const marketEl = document.getElementById("market");
-const videoContainer = document.getElementById("videoContainer");
-const audioPlayer = document.getElementById("audioPlayer");
-
-generateBtn.addEventListener("click", async () => {
-  const idea = document.getElementById("ideaInput").value.trim();
-  if(!idea) return alert("Please type your startup idea!");
-
-  output.style.opacity = 0; 
-
-  try {
-    const res = await fetch("http://localhost:5000/api/ai/generate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ idea })
-    });
-
-    const data = await res.json();
-
-    summaryEl.textContent = data.summary;
-    budgetEl.textContent = data.budget;
-    riskEl.textContent = data.riskLevel;
-    marketEl.textContent = data.marketSize;
-
-    // Audio handling
-    if(data.audioURL) {
-      audioPlayer.src = data.audioURL;
-      audioPlayer.style.display = "block";
-      audioPlayer.play();
-    } else {
-      audioPlayer.style.display = "none";
+    function refineIdea() {
+        const idea = document.getElementById('ideaInput').value;
+        document.getElementById('refinedIdea').innerText = "Refined Idea: " + idea + " [AI-enhanced]";
     }
 
-    // Video handling
-    videoContainer.innerHTML = `<video src="${data.videoURL}" controls class="fade-in"></video>`;
+    function generateStoryboard() {
+        const storyboard = document.getElementById('storyboardInput').value;
+        document.getElementById('storyboardOutput').innerText = "Storyboard / Script:\n" + storyboard + "\n[AI-generated cinematic sequence]";
+    }
 
-    output.classList.add("fade-in");
-    output.style.opacity = 1;
+    function simulateAction() {
+        const action = document.getElementById('userAction').value;
+        const probability = (Math.random() * 100).toFixed(2);
+        document.getElementById('probabilityOutput').innerText = `Action: "${action}"\nPredicted Success Probability: ${probability}%`;
+    }
+	let probabilityChart;
 
-  } catch (err) {
-    console.error(err);
-    alert("Error connecting to backend. Using demo fallback.");
-    
-    // Show demo fallback if backend fails
-    summaryEl.textContent = "Demo summary: Free preview of your startup idea.";
-    budgetEl.textContent = "$10,000 - $20,000";
-    riskEl.textContent = "Medium";
-    marketEl.textContent = "500,000 potential users";
-    audioPlayer.style.display = "none";
-    videoContainer.innerHTML = `<video src="https://sample-videos.com/video123/mp4/480/asdasdas.mp4" controls class="fade-in"></video>`;
-    output.classList.add("fade-in");
-    output.style.opacity = 1;
-  }
-});
+function updateSimulation() {
+    const market = document.getElementById('marketInterest').value;
+    const investor = document.getElementById('investorConfidence').value;
+    const feasibility = document.getElementById('productFeasibility').value;
+
+    document.getElementById('marketInterestVal').innerText = market;
+    document.getElementById('investorConfidenceVal').innerText = investor;
+    document.getElementById('productFeasibilityVal').innerText = feasibility;
+
+    const data = [parseInt(market), parseInt(investor), parseInt(feasibility)];
+
+    if (probabilityChart) {
+        probabilityChart.data.datasets[0].data = data;
+        probabilityChart.update();
+    } else {
+        const ctx = document.getElementById('probabilityChart').getContext('2d');
+        probabilityChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Market Interest', 'Investor Confidence', 'Product Feasibility'],
+                datasets: [{
+                    label: 'Simulation Values',
+                    data: data,
+                    backgroundColor: ['#4f46e5', '#6366f1', '#818cf8']
+                }]
+            },
+            options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { max: 100 } } }
+        });
+    }
+}
+
+function simulateAction() {
+    const market = parseInt(document.getElementById('marketInterest').value);
+    const investor = parseInt(document.getElementById('investorConfidence').value);
+    const feasibility = parseInt(document.getElementById('productFeasibility').value);
+
+    // Weighted probability formula
+    const probability = ((0.4*market) + (0.35*investor) + (0.25*feasibility)).toFixed(2);
+    document.getElementById('probabilityOutput').innerText = `Estimated Success Probability: ${probability}%`;
+}
+
+// Initialize chart with default values
+updateSimulation();
+
+
+    function generateMetrics() {
+        const ctx = document.getElementById('metricsChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Market Fit', 'Funding Likelihood', 'Customer Interest', 'Growth Potential'],
+                datasets: [{
+                    label: 'AI Metrics',
+                    data: [80, 65, 90, 70],
+                    backgroundColor: ['#4f46e5', '#6366f1', '#818cf8', '#a5b4fc']
+                }]
+            },
+            options: { responsive: true, plugins: { legend: { display: false } } }
+        });
+    }
+
+    function generatePitch() {
+        alert('Pitch video generation triggered. Connect this to your backend video API.');
+    }
+
+    // 3D Canvas placeholder
+    const canvas = document.getElementById('visualCanvas');
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#c7d2fe';
+    ctx.fillRect(50, 50, 100, 100);
+    ctx.fillStyle = '#4f46e5';
+    ctx.fillRect(200, 100, 150, 100);
 </script>
 
 </body>
